@@ -1,0 +1,7 @@
+---
+import { YouTube } from 'astro-embed';
+const { id, title } = Astro.props;
+---
+<div style="border-radius: 12px; overflow: hidden; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <YouTube id={id} title={title} posterQuality="max" />
+</div>

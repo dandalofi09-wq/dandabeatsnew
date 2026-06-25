@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import YouTubeCustom from '../../components/YouTubeCustom.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post: any) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props as { post: any };
+const { Content } = await (post as any).render();
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article style="max-width: 800px; margin: 0 auto; padding-top: 2rem;">
+    <nav aria-label="Breadcrumb" style="margin-bottom: 2rem; font-size: 0.9rem;">
+      <a href="/posts" style="color: var(--accent);">← Voltar para Playlists</a>
+    </nav>
+    
+    <header style="text-align: center; margin-bottom: 3rem;">
+      <span class="tag">{post.data.category}</span>
+      <h1 style="font-size: 2.5rem; margin: 1rem 0;">{post.data.title}</h1>
+      <p style="font-size: 1.1rem;">{post.data.description}</p>
+      <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time> • {post.data.readingTime} de leitura
+      </div>
+    </header>
+
+    <YouTubeCustom id={post.data.youtubeId} title={post.data.title} />
+
+    <div class="content" style="margin-top: 2rem; font-size: 1.1rem; line-height: 1.8;">
+      <Content />
+    </div>
+
+    <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+      <h4 style="margin-bottom: 1rem;">Tags:</h4>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        {post.data.tags.map((tag: any) => <span class="tag">#{tag}</span>)}
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

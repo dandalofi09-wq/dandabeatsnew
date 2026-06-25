@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+const { title, description } = Astro.props;
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description || "Beats calmos e vídeos lo-fi para estudar, focar e relaxar."} />
+    <title>{title} | LoFi Station</title>
+    
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+      if (theme === 'light') { document.documentElement.classList.remove('dark'); } 
+      else { document.documentElement.classList.add('dark'); }
+      window.localStorage.setItem('theme', theme);
+    </script>
+  </head>
+  <body>
+    <header class="container" style="display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; padding-bottom: 2rem;">
+      <a href="/" style="font-size: 1.5rem; font-weight: bold; letter-spacing: -1px;">LoFi Station 🎧</a>
+      <nav aria-label="Navegação principal" style="display: flex; gap: 1.5rem; align-items: center;">
+        <a href="/">Início</a>
+        <a href="/posts">Playlists</a>
+        <a href="/categorias">Categorias</a>
+        <a href="/sobre">Sobre</a>
+        <ThemeToggle />
+      </nav>
+    </header>
+
+    <main class="container" id="main-content">
+      <slot />
+    </main>
+
+    <footer class="container" style="margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-color); text-align: center;">
+      <p>Um espaço para relaxar. Criado com Astro.</p>
+    </footer>
+  </body>
+</html>
