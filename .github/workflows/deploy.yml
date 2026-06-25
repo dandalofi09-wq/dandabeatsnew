@@ -3,9 +3,9 @@ name: Deploy para GitHub Pages
 on:
   push:
     branches:
-      - main 
+      - main
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   deploy:
@@ -14,8 +14,22 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: lofi-station
+
+      - name: Build site
+        run: npm run build
+        working-directory: lofi-station
+
       - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: lofi-station/dist
+          publish_branch: gh-pages
